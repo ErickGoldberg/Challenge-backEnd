@@ -28,7 +28,7 @@ namespace Challenge_backEnd.Controllers
         [HttpGet]
         public void IActionResult()
         {
-            foreach(var despesa in despesas)
+            foreach (var despesa in despesas)
             {
                 Console.WriteLine("Descrição: " + despesa.Descricao);
                 Console.WriteLine("Valor: " + despesa.Valor);
@@ -42,6 +42,38 @@ namespace Challenge_backEnd.Controllers
             despesas.FirstOrDefault(despesa => despesa.Id == id);
         }
 
+        [HttpPut("{id}")]
+        public IActionResult AtualizaDespesa(int id, [FromBody] Despesa novaDespesa)
+        {
+            // Localiza a despesa existente com base no ID
+            Despesa despesaExistente = despesas.FirstOrDefault(d => d.Id == id);
+
+            if (despesaExistente == null)
+            {
+                return NotFound(); // Retorna NotFound caso a despesa não seja encontrada
+            }
+
+            despesaExistente.Descricao = novaDespesa.Descricao;
+            despesaExistente.Valor = novaDespesa.Valor;
+            despesaExistente.Data = novaDespesa.Data;
+
+            return Ok();
+        }
+
+        [HttpDelete("{id}")]
+        public IActionResult DeletaDespesa(int id)
+        {
+            // Localiza a despesa existente com base no ID
+            Despesa despesaExistente = despesas.FirstOrDefault(d => d.Id == id);
+
+            if (despesaExistente == null)
+            {
+                return NotFound();
+            }
+
+            despesas.Remove(despesaExistente);
+            return Ok();
+        }
 
     }
 }
