@@ -1,4 +1,5 @@
 ﻿using System.ComponentModel.DataAnnotations;
+using Challenge_backEnd.Models.Enums;
 
 namespace Challenge_backEnd.Models
 {
@@ -13,5 +14,6 @@ namespace Challenge_backEnd.Models
         public double Valor { get; set; }
         [Required]
         public DateTime Data { get; set; }
+        
     }
 } 

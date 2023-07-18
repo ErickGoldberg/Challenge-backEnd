@@ -17,9 +17,9 @@ namespace Challenge_backEnd.DataBase
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             // Configure as configurações de mapeamento das entidades, se necessário
-            // modelBuilder.Entity<Receita>().ToTable("Receitas");
-            // modelBuilder.Entity<Despesa>().ToTable("Despesas");
-            // ...
+             modelBuilder.Entity<Receita>().ToTable("Receitas");
+             modelBuilder.Entity<Despesa>().ToTable("Despesas");
+      
         }
     }
 }

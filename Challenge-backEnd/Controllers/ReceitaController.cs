@@ -23,6 +23,7 @@ namespace Challenge_backEnd.Controllers
             {
                 return BadRequest("Já existe uma receita com a mesma descrição no mesmo mês.");
             }
+            
 
             receitas.Add(receita);
             return Ok();
@@ -36,6 +37,7 @@ namespace Challenge_backEnd.Controllers
                 Console.WriteLine("Descrição " + receita.Descricao);
                 Console.WriteLine("Valor " + receita.Valor);
                 Console.WriteLine("Data " + receita.Data);
+                
             }
         }
 
@@ -59,6 +61,7 @@ namespace Challenge_backEnd.Controllers
             receitaExistente.Descricao = novaReceita.Descricao;
             receitaExistente.Valor = novaReceita.Valor;
             receitaExistente.Data = novaReceita.Data;
+            receitaExistente.Categoria = novaReceita.Categoria;
 
             return Ok(); 
         }

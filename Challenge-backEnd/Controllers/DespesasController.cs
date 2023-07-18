@@ -19,6 +19,10 @@ namespace Challenge_backEnd.Controllers
             {
                 return BadRequest("Já existe uma despesa com a mesma descrição no mesmo mês.");
             }
+            if (despesa.Categoria == null)
+            {
+                despesa.Categoria = 0;
+            }
 
             despesas.Add(despesa);
             return Ok();
@@ -33,6 +37,7 @@ namespace Challenge_backEnd.Controllers
                 Console.WriteLine("Descrição: " + despesa.Descricao);
                 Console.WriteLine("Valor: " + despesa.Valor);
                 Console.WriteLine("Data: " + despesa.Data);
+                Console.WriteLine("Categoria " + despesa.Categoria);
             }
         }
 
