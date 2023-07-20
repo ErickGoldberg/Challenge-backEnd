@@ -30,22 +30,73 @@ namespace Challenge_backEnd.Controllers
 
 
         [HttpGet]
-        public void IActionResult()
+        public IActionResult GetAllDespesas()
         {
-            foreach (var despesa in despesas)
-            {
-                Console.WriteLine("Descrição: " + despesa.Descricao);
-                Console.WriteLine("Valor: " + despesa.Valor);
-                Console.WriteLine("Data: " + despesa.Data);
-                Console.WriteLine("Categoria " + despesa.Categoria);
-            }
+            return Ok(despesas);
         }
 
-        [HttpGet]
-        public void RecuperaDespesaPeloId(int id)
+        [HttpGet("{descricao}")]
+        public IActionResult BuscarDespesasPorDescricao(string descricao)
         {
-            despesas.FirstOrDefault(despesa => despesa.Id == id);
+            var despesasEncontradas = despesas.Where(d => d.Descricao.Contains(descricao, StringComparison.OrdinalIgnoreCase)).ToList();
+            return Ok(despesasEncontradas);
         }
+
+        [HttpGet("{id}")]
+        public IActionResult RecuperaDespesaPeloId(int id)
+        {
+            var despesa = despesas.FirstOrDefault(d => d.Id == id);
+            if (despesa == null)
+            {
+                return NotFound();
+            }
+
+            return Ok(despesa);
+        }
+
+        [HttpGet("Listar{ano}/{mes}")]
+        public IActionResult ListarDespesaMes(int ano, int mes)
+        {
+            var listaDespesas = despesas.Where(d => d.Data.Year == ano && d.Data.Month == mes).ToList();
+
+            if (listaDespesas.Count == 0)
+            {
+                return NotFound();
+            }
+
+            return Ok(listaDespesas);
+        }
+
+        [HttpGet("Resumo/{ano}/{mes}")]
+        public IActionResult ResumoDespesaMes(int ano, int mes)
+        {
+            var despesasDoMes = despesas.Where(d => d.Data.Year == ano && d.Data.Month == mes).ToList();
+            var receitasDoMes = receitas.Where(r => r.Data.Year == ano && r.Data.Month == mes).ToList();
+
+
+            decimal valorTotalReceitas = receitasDoMes.Sum(r => r.Valor);
+
+            decimal valorTotalDespesas = despesasDoMes.Sum(d => d.Valor);
+
+            decimal saldoFinal = valorTotalReceitas - valorTotalDespesas;
+
+            // Valor total gasto no mês em cada uma das categorias
+            var categoriasGastos = despesasDoMes.GroupBy(d => d.Categoria)
+                                              .Select(group => new { Categoria = group.Key, TotalGasto = group.Sum(d => d.Valor) })
+                                              .ToList();
+
+            // Constrói o objeto de resumo do mês
+            var resumoMes = new
+            {
+                ValorTotalReceitas = valorTotalReceitas,
+                ValorTotalDespesas = valorTotalDespesas,
+                SaldoFinal = saldoFinal,
+                CategoriasGastos = categoriasGastos
+            };
+
+            return Ok(resumoMes);
+        }
+
 
         [HttpPut("{id}")]
         public IActionResult AtualizaDespesa(int id, [FromBody] Despesa novaDespesa)

@@ -14,6 +14,6 @@ namespace Challenge_backEnd.Models
         public double Valor { get; set; }
         [Required]
         public DateTime Data { get; set; }
-        public EnumCategory categoria { get; set; }
+        public EnumCategory Categoria { get; set; }
     }
 }

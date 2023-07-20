@@ -30,22 +30,44 @@ namespace Challenge_backEnd.Controllers
         }
 
         [HttpGet]
-        public void IActionResult()
+        public IActionResult GetAllReceitas()
         {
-            foreach (var receita in receitas)
-            {
-                Console.WriteLine("Descrição " + receita.Descricao);
-                Console.WriteLine("Valor " + receita.Valor);
-                Console.WriteLine("Data " + receita.Data);
-                
-            }
+            return Ok(receitas);
+        }
+
+        [HttpGet("{descricao}")]
+        public IActionResult BuscarReceitasPelaDescricao(string descricao)
+        {
+            var receitasEncontradas = receitas.Where(r => r.Descricao.Contains(descricao, StringComparison.OrdinalIgnoreCase)).ToList();
+            return Ok(receitasEncontradas);
         }
 
         [HttpGet]
-        public void RecuperaReceitaPeloId(int id)
+        public IActionResult RecuperaReceitaPeloId(int id)
         {
             receitas.FirstOrDefault(receita => receita.Id == id);
+
+            if(receitas == null)
+            {
+                return NotFound();
+            }
+
+            return Ok(receitas);
         }
+
+        [HttpGet("listar/{ano}/{mes}")] // Para evitar conflito de rota com o GetAllReceitas()
+        public IActionResult ListarReceitasMes(int ano, int mes)
+        {
+            var receitasFiltradas = receitas.Where(r => r.Data.Year == ano && r.Data.Month == mes).ToList();
+
+            if (receitasFiltradas.Count == 0)
+            {
+                return NotFound();
+            }
+
+            return Ok(receitasFiltradas);
+        }
+
 
         [HttpPut("{id}")]
         public IActionResult AtualizaReceita(int id, [FromBody] Receita novaReceita)
@@ -61,7 +83,6 @@ namespace Challenge_backEnd.Controllers
             receitaExistente.Descricao = novaReceita.Descricao;
             receitaExistente.Valor = novaReceita.Valor;
             receitaExistente.Data = novaReceita.Data;
-            receitaExistente.Categoria = novaReceita.Categoria;
 
             return Ok(); 
         }
